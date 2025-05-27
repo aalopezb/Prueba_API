@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Central de Microservicios 3.0</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        a.button, button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        a.button:hover, button:hover {
+            background-color: #2980b9;
+        }
+        #resultado {
+            margin-top: 30px;
+        }
+        #resultado img {
+            margin-top: 10px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Microservicios Distribuidos</h1>
+    <a class="button" href="https://heroku-hora-ga-db0b7a46e167.herokuapp.com/">(Heroku)</a>
+    <a class="button" href="https://king-prawn-app-zxwrk.ondigitalocean.app/">(DigitalOcean)</a>
+    <a class="button" href="https://web-production-ec50.up.railway.app/">(Railway)</a>
+    <a class="button" href="https://vercel-mensaje-ga.vercel.app/">(Vercel)</a>
+    <button onclick="consultarPokemon()">Pokémon (EC2)</button>
+
+    <div id="resultado"></div>
+
+    <script>
+        function consultarPokemon() {
+            const nombre = prompt("Introduce el nombre de un Pokémon:");
+            if (!nombre) return;
+
+            fetch(`http://35.168.100.140:5005/pokemon?nombre=${nombre}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("resultado").innerHTML = "<p>Pokémon no encontrado</p>";
+                    } else {
+                        document.getElementById("resultado").innerHTML = `
+                            <h2>${data.nombre}</h2>
+                            <p><strong>Altura:</strong> ${data.altura}</p>
+                            <p><strong>Peso:</strong> ${data.peso}</p>
+                            <img src="${data.imagen}" alt="Imagen de ${data.nombre}">
+                        `;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById("resultado").innerHTML = "<p>Error al conectar con el microservicio de EC2</p>";
+                });
+        }
+    </script>
+</body>
+</html>
